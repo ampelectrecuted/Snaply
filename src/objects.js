@@ -814,7 +814,6 @@ SpriteMorph.prototype.primitiveBlocks = function () {
             code: 'note'
         },
         doPlayFrequency: { // only in dev mode - experimental
-            dev: true,
             type: 'command',
             category: 'sound',
             spec: 'play %n Hz for %n secs',
@@ -1924,8 +1923,7 @@ SpriteMorph.prototype.primitiveBlocks = function () {
             spec: 'type of %s',
             defaults: [5]
         },
-        reportTextFunction: { // only in dev mode - experimental
-            dev: true,
+        reportTextFunction: {
             type: 'reporter',
             category: 'operators',
             spec: '%txtfun of %s',
@@ -2281,7 +2279,6 @@ SpriteMorph.prototype.primitiveBlocks = function () {
 
         // Tables - experimental
         doShowTable: {
-            dev: true,
             type: 'command',
             category: 'lists',
             spec: 'show table %l'
@@ -4035,6 +4032,7 @@ SpriteMorph.prototype.blockTemplates = function (
         blocks.push(block('reportTextSplit'));
         blocks.push(block('reportLetter'));
         blocks.push(block('reportTextAttribute'));
+        blocks.push(block('reportTextFunction'));
         blocks.push('-');
         blocks.push(block('reportUnicode'));
         blocks.push(block('reportUnicodeAsLetter'));
@@ -4055,7 +4053,6 @@ SpriteMorph.prototype.blockTemplates = function (
             blocks.push(this.devModeText());
             blocks.push('-');
             blocks.push(block('reportTypeOf'));
-            blocks.push(block('reportTextFunction'));
         }
 
     } else if (category === 'variables') {
@@ -4142,13 +4139,7 @@ SpriteMorph.prototype.blockTemplates = function (
             blocks.push(block('reportMappedCode'));
         }
 
-        // for debugging: ///////////////
-        if (this.world().isDevMode) {
-            blocks.push('-');
-            blocks.push(this.devModeText());
-            blocks.push('-');
-            blocks.push(block('doShowTable'));
-        }
+        blocks.push(block('doShowTable'));
     }
 
     return blocks;
@@ -11404,15 +11395,8 @@ StageMorph.prototype.blockTemplates = function (
         blocks.push(block('getPan'));
         blocks.push('-');
         blocks.push(block('playFreq'));
+        blocks.push(block('doPlayFrequency'));
         blocks.push(block('stopFreq'));
-
-        // for debugging: ///////////////
-        if (this.world().isDevMode) {
-            blocks.push('-');
-            blocks.push(this.devModeText());
-            blocks.push('-');
-            blocks.push(block('doPlayFrequency'));
-        }
 
     } else if (category === 'pen') {
 
