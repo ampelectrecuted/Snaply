@@ -322,7 +322,7 @@ IDE_Morph.prototype.init = function (config) {
 
     // logoURL is disabled because the image data is hard-copied
     // to avoid tainting the world canvas
-    // this.logoURL = this.resourceURL('src', 'snap_logo_sm.png');
+    this.logoURL = this.resourceURL('src', 'snap_logo_sm.png');
 
     this.logo = null;
     this.controlBar = null;
@@ -1044,8 +1044,8 @@ IDE_Morph.prototype.createLogo = function () {
     // use Snap's (and Morphic's) color pickers to sense any pixel which
     // otherwise would be compromised by annoying browser security.
 
-    // this.logo.texture = this.logoURL; // original code, commented out
-    this.logo.texture = "data:image/png;base64," +
+    this.logo.texture = this.logoURL; // original code, commented out
+    /* .logo.texture = "data:image/png;base64," +
         "iVBORw0KGgoAAAANSUhEUgAAACwAAAAYCAYAAACBbx+6AAAKiklEQVRYR5VXe3BU5RX/" +
         "ne+7924SwiOEJJvwUCAgCZFBEtRatIlVlATLIwlFsCgdeYWICu1MfbKUabVVtBoDQlUc" +
         "FCubEIpAAEUTrGhFGIXAAjZCFdhNQiTkQbK7997vdO7SREAo9P5zZ77HOb9zzu87D8JV" +
@@ -1100,7 +1100,7 @@ IDE_Morph.prototype.createLogo = function () {
         "fOCLp9268uQXQOpGZnKKTBtLinaYAgJJojZWfCsDBSTlFPfEEzVXy/3/5UCHZlecmh0B" +
         "jrfLvBAJPlC/G1PlkNza0OkP4noGW4zVhkaTTAsWsTNnkDP02XSu82oTTPOSCgJvOw85" +
         "0xE09MezY9mpQp7i87IHwOJ0IiRcSNOIAdkRmZEJ5D9/VBCtnsd7nAAAAABJRU5ErkJg" +
-        "gg==";
+        "gg=="; */
 
     this.logo.render = function (ctx) {
         var gradient = ctx.createLinearGradient(
