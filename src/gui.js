@@ -4318,24 +4318,9 @@ IDE_Morph.prototype.snapMenu = function () {
 
     menu = new MenuMorph(this);
     menu.addItem('About...', 'aboutSnap');
-    menu.addLine();
     menu.addItem(
-        'Reference manual',
-        () => {
-            var url = this.resourceURL('help', 'SnapManual.pdf');
-            globalThis.open(url, 'SnapReferenceManual');
-        }
-    );
-    menu.addItem(
-        'Snap! website',
-        () => globalThis.open('https://snap.berkeley.edu/', 'SnapWebsite')
-    );
-    menu.addItem(
-        'Download source',
-        () => globalThis.open(
-                'https://github.com/jmoenig/Snap/releases/latest',
-                'SnapSource'
-            )
+        'Snaply! Forum Topic',
+        () => globalThis.open('https://forum.snap.berkeley.edu/t/snaply-please-contribute-work-in-progress-snap-mod-with-server-support/20737/', 'SnapWebsite')
     );
     if (world.isDevMode) {
         menu.addLine();
