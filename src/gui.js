@@ -904,6 +904,8 @@ IDE_Morph.prototype.applyConfigurations = function () {
         } else if (cnf.theme === 'dark') {
             this.setDefaultTheme();
         }
+    } else {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) this.setBrightTheme();
     }
 
     // interaction mode
