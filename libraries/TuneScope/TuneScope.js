@@ -1,7 +1,7 @@
 SnapExtensions.primitives.set(
     'ts_setinst(name)',
     function (name) {
-        window.parent.currentInstrumentName = name.toLowerCase();
+        globalThis.parent.currentInstrumentName = name.toLowerCase();
     }
 );
 
@@ -9,7 +9,7 @@ SnapExtensions.primitives.set(
     'ts_setvol(percent)',
     function (percent) {
         let adjusted_percent = (percent === 0) ? 0.0001: percent;
-        window.parent.globalInstrumentVolume = adjusted_percent/100.0;
+        globalThis.parent.globalInstrumentVolume = adjusted_percent/100.0;
     }
 );
 
@@ -18,21 +18,21 @@ SnapExtensions.primitives.set(
     function (name, percent) {
         name = name.toLowerCase();
         let adjusted_percent = (percent === 0) ? 0.0001: percent;
-        window.parent.instrumentVolumes[name] = adjusted_percent/100.0;
+        globalThis.parent.instrumentVolumes[name] = adjusted_percent/100.0;
     }
 );
 
 SnapExtensions.primitives.set(
     'ts_playnote(note, duration)',
     function (note, noteLength) {
-        window.playNote(note, noteLength);
+        globalThis.playNote(note, noteLength);
     }
 );
 
 SnapExtensions.primitives.set(
     'ts_getcurrentnote()',
     function () {
-        return window._currentNote
+        return globalThis._currentNote
     }
 )
 
@@ -40,11 +40,11 @@ SnapExtensions.primitives.set(
     'ts_parsemidifile()',
     function () {
         const getMidiFile = async () => {
-            window._parsed = "";
-            fileMidi = await window._selectFile(".mid", false);
+            globalThis._parsed = "";
+            fileMidi = await globalThis._selectFile(".mid", false);
             const arrayBuffer = await fileMidi.arrayBuffer()
-            const _parsedMidi = await new window.Midi(arrayBuffer)
-            window._parsed = _parsedMidi.toJSON();
+            const _parsedMidi = await new globalThis.Midi(arrayBuffer)
+            globalThis._parsed = _parsedMidi.toJSON();
             world.children[0].broadcast("ts_file_input_received")
         }
         getMidiFile();
@@ -55,8 +55,8 @@ SnapExtensions.primitives.set(
     'ts_getparsed()',
     function() {
         world.children[0].broadcast("ts_no_file_upload")
-        let temp = window._objToArray(window._parsed);
-        temp = window.convertArrayToListRecursive(temp);
+        let temp = globalThis._objToArray(globalThis._parsed);
+        temp = globalThis.convertArrayToListRecursive(temp);
         return temp;
     }
 );
@@ -64,7 +64,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
     'ts_playtracks(tracklist, timesignature)',
     function (tracksList, timeSignature, tempo) {
-        window.parent._ts_pausePlayback = false;
+        globalThis.parent._ts_pausePlayback = false;
         const multiplyArray = (arr, length) =>
           Array.from({ length }, () => arr).flat()
 
@@ -78,19 +78,19 @@ SnapExtensions.primitives.set(
 
         const playTrackMeasure = async (currTrack, measureIndex, beatsPerMeasure, tempo, instrument) => {
             var elapsedMeasureTime = 0;
-            const timeEndIndex = beatsPerMeasure[0] * (window.baseTempo / tempo);
+            const timeEndIndex = beatsPerMeasure[0] * (globalThis.baseTempo / tempo);
 
             /**
              * We can calculate in seconds how long the measure lasts in seconds and then simply calculate when we are past the elapsed time in seconds and this is how we synchronize measures
              */
             while (elapsedMeasureTime < timeEndIndex) {
-                if(window.parent._ts_pausePlayback) break;
+                if(globalThis.parent._ts_pausePlayback) break;
                 const note = currTrack[measureIndex][0];
                 const noteLength = currTrack[measureIndex][1];
                 measureIndex++; //increment for the next index in the track
 
                 // play the note and wait
-                await window.playNote(note, noteLength, instrument);
+                await globalThis.playNote(note, noteLength, instrument);
                 await wait(noteLength * 1000)
 
                 // we increment i with respect to the number of beats the current note occupies in a measure
@@ -103,12 +103,12 @@ SnapExtensions.primitives.set(
             // verify inputs
             if (!tracksList.contents) return;
 
-            const beatsPerMeasure = window.timeSignatureToBeatsPerMeasure[timeSignature];
+            const beatsPerMeasure = globalThis.timeSignatureToBeatsPerMeasure[timeSignature];
 
-            var tracks = window.convertListToArrayRecursive(tracksList);
+            var tracks = globalThis.convertListToArrayRecursive(tracksList);
 
             // convert all elements in the track to lowercase
-            tracks = window.toLowerCaseRecursive(tracks);
+            tracks = globalThis.toLowerCaseRecursive(tracks);
 
             // check to make sure we have an actual melody/chord track rather than just a loop
             // this ensures that we have a definitive track length
@@ -145,8 +145,8 @@ SnapExtensions.primitives.set(
                 for (let j = 1; j < currTrack.length; j++) { //index from 1 to avoid the header
                     //Reassign the durations list to duration in seconds 
                     //jth (Note, Duration) pair
-                    if (!window.isNumber(currTrack[j][1])) {
-                        currTrack[j][1] = window.noteLengthToTimeValue[currTrack[j][1]] * (window.baseTempo / tempo);
+                    if (!globalThis.isNumber(currTrack[j][1])) {
+                        currTrack[j][1] = globalThis.noteLengthToTimeValue[currTrack[j][1]] * (globalThis.baseTempo / tempo);
                         console.log("the number is " + currTrack[j][1]);
                     } else {
                         currTrack[j][1] = parseFloat(currTrack[j][1]);
@@ -160,7 +160,7 @@ SnapExtensions.primitives.set(
             for (let j = 1; j < defTrack.length; j++) {
                 totalSeconds += defTrack[j][1];
             }
-            const secondsPerMeasure = (window.baseTempo / tempo) * beatsPerMeasure[0]
+            const secondsPerMeasure = (globalThis.baseTempo / tempo) * beatsPerMeasure[0]
             const totalMeasures = Math.ceil(totalSeconds / secondsPerMeasure)
 
             //convert any melody/chord/drum loop to a regular track
@@ -235,14 +235,14 @@ SnapExtensions.primitives.set(
 
             // Play Measures track by track
             for (let i = 0; i < totalMeasures; i++) {
-                if(window.parent._ts_pausePlayback) break;
+                if(globalThis.parent._ts_pausePlayback) break;
                 console.log("Playing measure " + (i + 1));
                 const measureResults = [];
 
                 // count for the number of beats that have passed since the last measure
                 // e.g. in 4/4, measure 3 will have 2*4 = 8 beats elapsed. Next measure starts
                 // on beat 8 (0 indexed)
-                let elapsedTime = i * (window.baseTempo / tempo) * beatsPerMeasure[0];
+                let elapsedTime = i * (globalThis.baseTempo / tempo) * beatsPerMeasure[0];
 
                 //per track
                 for (let j = 0; j < tracks.length; j++) {
@@ -286,14 +286,14 @@ SnapExtensions.primitives.set(
     function (controller_name, instrument_name) {
 
         function onEnabled(controller, instrument) {
-            let synth = window.WebMidi.getInputByName(controller);
+            let synth = globalThis.WebMidi.getInputByName(controller);
             let keyboard = synth.channels[1];
             //remove any existing listeners
             keyboard.removeListener("noteon")
 
             // Listener for the keyboard, prints midi note number
             keyboard.addListener("noteon", e => {
-                window.playNote(e.note.identifier, 0.5, instrument);
+                globalThis.playNote(e.note.identifier, 0.5, instrument);
             });
         }
 
@@ -301,7 +301,7 @@ SnapExtensions.primitives.set(
             if(controller === null || controller === "") return;
 
             //enables the webmidi controller, doesn't record notes
-            window.WebMidi.enable((err) => {
+            globalThis.WebMidi.enable((err) => {
                 if (err) {
                     alert(err);
                 } else {
@@ -317,7 +317,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
     'ts_stopMIDI()',
     function() {
-        window.WebMidi.disable();
+        globalThis.WebMidi.disable();
     }
 )
 
@@ -325,29 +325,29 @@ SnapExtensions.primitives.set(
     'ts_settone(id, frequency, amplitude, balance)',
     function (id, freq, ampl, bal) {
         var created = false;
-        if (!window.tones[id]) {
-          window.tones[id] = new window._Tone(id);
+        if (!globalThis.tones[id]) {
+          globalThis.tones[id] = new globalThis._Tone(id);
           created = true;
         }
 
-        window.tones[id].setFreq(freq);
-        window.tones[id].setAmpl(ampl * 100);
-        window.tones[id].setPan(bal);
-        window.tones[id].turnOn();
+        globalThis.tones[id].setFreq(freq);
+        globalThis.tones[id].setAmpl(ampl * 100);
+        globalThis.tones[id].setPan(bal);
+        globalThis.tones[id].turnOn();
     }
 );
 
 SnapExtensions.primitives.set(
     'ts_turntoneon(id, bool)',
     function (id, on) {
-        if (!window.tones[id]) {
+        if (!globalThis.tones[id]) {
           return;
         }
 
         if (on) {
-          window.tones[id].turnOn();
+          globalThis.tones[id].turnOn();
         } else {
-          window.tones[id].turnOff();
+          globalThis.tones[id].turnOff();
         }
     }
 );
@@ -355,7 +355,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
     'ts_stoptones()',
     function () {
-        const vals = Object.values(window.tones);
+        const vals = Object.values(globalThis.tones);
 
         for (let i = 0; i < vals.length; i++) {
           const currTone = vals[i];
@@ -367,6 +367,6 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
     'ts_loaded()',
     function () {
-        return window.parent.loadedTuneScope === true;
+        return globalThis.parent.loadedTuneScope === true;
     }
 );

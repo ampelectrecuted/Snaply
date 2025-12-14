@@ -11,7 +11,7 @@ SnapExtensions.primitives.set(
         ide.getURL(
             src,
             function (blob) {
-                var reader = new window.FileReader();
+                var reader = new globalThis.FileReader();
                 reader.readAsDataURL(blob);
                 reader.onloadend = function() {
                     var base64 = reader.result;
@@ -31,13 +31,13 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
     prefix+'stop_all_speech_synthesis',
     () => {
-        window.speechSynthesis.cancel();
+        globalThis.speechSynthesis.cancel();
     }
 )
 
 SnapExtensions.primitives.set(
     prefix+'is_speaking',
     () => {
-        return window.speechSynthesis.speaking;
+        return globalThis.speechSynthesis.speaking;
     }
 )

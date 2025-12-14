@@ -29,7 +29,7 @@
         <script src="../src/FileSaver.min.js"></script>
         <script>
             var world;
-            window.onload = function () {
+            globalThis.onload = function () {
                 var ide = new IDE_Morph({
                         path: '../',
                         load: 'transpile.xml',

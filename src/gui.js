@@ -384,11 +384,11 @@ IDE_Morph.prototype.init = function (config) {
 IDE_Morph.prototype.openIn = function (world) {
     var hash, myself = this;
 
-    window.onmessage = function (event) {
+    globalThis.onmessage = function (event) {
         // make the API accessible from outside an iframe
         var ide = myself;
         if (!isNil(event.data.selector)) {
-            window.top.postMessage(
+            globalThis.top.postMessage(
                 {
                     selector: event.data.selector,
                     response: ide[event.data.selector].apply(
@@ -474,10 +474,10 @@ IDE_Morph.prototype.openIn = function (world) {
         }
         if (dict.hideControls) {
             myself.controlBar.hide();
-            window.noExitWarning = true;
+            globalThis.noExitWarning = true;
         }
         if (dict.noExitWarning) {
-            window.noExitWarning = true;
+            globalThis.noExitWarning = true;
         }
         if (dict.blocksZoom) {
             myself.savingPreferences = false;
@@ -973,7 +973,7 @@ IDE_Morph.prototype.applyConfigurations = function () {
 
     // disable onbeforeunload close warning
     if (cnf.noExitWarning) {
-        window.noExitWarning = true;
+        globalThis.noExitWarning = true;
     }
 };
 
@@ -984,7 +984,7 @@ IDE_Morph.prototype.applyPaneHidingConfigurations = function () {
     if (cnf.hideControls) {
         this.logo.hide();
         this.controlBar.hide();
-        window.noExitWarning = true;
+        globalThis.noExitWarning = true;
     }
 
     // hide categories
@@ -3180,7 +3180,7 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
         this.getURL(
             anAudio.src,
             blob => {
-                var reader = new window.FileReader();
+                var reader = new globalThis.FileReader();
                 reader.readAsDataURL(blob);
                 reader.onloadend = () => {
                 	var base64 = reader.result;
@@ -3717,7 +3717,7 @@ IDE_Morph.prototype.applySavedSettings = function () {
 
     // solid shadow
     if (solidshadow) {
-        window.useBlurredShadows = false;
+        globalThis.useBlurredShadows = false;
         this.rerender();
     }
 };
@@ -4020,7 +4020,7 @@ IDE_Morph.prototype.makeSureRecordingIsMono = function (sound) {
             return callback (sound);
         }
         base64 = sound.audio.src.split(',')[1];
-        binaryString = window.atob(base64);
+        binaryString = globalThis.atob(base64);
         len = binaryString.length;
         bytes = new Uint8Array(len);
         for (i = 0; i < len; i += 1)        {
@@ -4321,16 +4321,16 @@ IDE_Morph.prototype.snapMenu = function () {
         'Reference manual',
         () => {
             var url = this.resourceURL('help', 'SnapManual.pdf');
-            window.open(url, 'SnapReferenceManual');
+            globalThis.open(url, 'SnapReferenceManual');
         }
     );
     menu.addItem(
         'Snap! website',
-        () => window.open('https://snap.berkeley.edu/', 'SnapWebsite')
+        () => globalThis.open('https://snap.berkeley.edu/', 'SnapWebsite')
     );
     menu.addItem(
         'Download source',
-        () => window.open(
+        () => globalThis.open(
                 'https://github.com/jmoenig/Snap/releases/latest',
                 'SnapSource'
             )
@@ -4411,7 +4411,7 @@ IDE_Morph.prototype.cloudMenu = function () {
             'Open in Community Site',
             () => {
                 var dict = this.urlParameters();
-                window.open(
+                globalThis.open(
                     this.cloud.showProjectPath(
                         dict.Username, dict.ProjectName
                     ),
@@ -4497,7 +4497,7 @@ IDE_Morph.prototype.cloudMenu = function () {
                                         if (
                                             !Process.prototype.isCatchingErrors
                                         ) {
-                                            window.open(
+                                            globalThis.open(
                                                 'data:text/xml,' + projectData
                                             );
                                         }
@@ -5691,7 +5691,7 @@ IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items) {
             this.getURL(
                 url,
                 txt => img.src = 'data:image/svg+xml;base64,' +
-                    window.btoa(txt)
+                    globalThis.btoa(txt)
             );
         } else {
             img.onload = function () {
@@ -7578,9 +7578,9 @@ IDE_Morph.prototype.toggleDynamicInputLabels = function () {
 };
 
 IDE_Morph.prototype.toggleBlurredShadows = function () {
-    window.useBlurredShadows = !useBlurredShadows;
+    globalThis.useBlurredShadows = !useBlurredShadows;
     this.rerender();
-    if (window.useBlurredShadows) {
+    if (globalThis.useBlurredShadows) {
         this.removeSetting('solidshadow');
     } else {
         this.saveSetting('solidshadow', false);
@@ -13891,7 +13891,7 @@ SoundRecorderDialogMorph.prototype.buildContents = function () {
             };
             this.mediaRecorder.onstop = (event) => {
                 var buffer = new Blob(audioChunks),
-                    reader = new window.FileReader();
+                    reader = new globalThis.FileReader();
                 reader.readAsDataURL(buffer);
                 reader.onloadend = () => {
                     var base64 = reader.result;

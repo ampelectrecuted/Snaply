@@ -72,7 +72,7 @@ SnapExtensions.primitives.set(
 			wsbroker = broker;
 		} else {
 			let prefix;
-			prefix = window.location.protocol == 'https:'?'wss':'ws';
+			prefix = globalThis.location.protocol == 'https:'?'wss':'ws';
 			wsbroker = prefix + '://' + broker;
 		}
 		if (wsbroker == 'wss://broker.emqx.io') {
@@ -274,7 +274,7 @@ SnapExtensions.primitives.set(
 			throw new Error('No connection to broker ' + broker);
 		}
 
-		//let prefix = window.location.protocol == 'https:'?'wss':'ws';
+		//let prefix = globalThis.location.protocol == 'https:'?'wss':'ws';
 		//let wsbroker = prefix+'://'+broker;
 		try{
 			let client = stage.mqtt[brokerKey];
@@ -412,7 +412,7 @@ SnapExtensions.primitives.set(
                return decodeURIComponent(escape(atob(b64)));
             } catch(e) {
                // otherwise simple decode
-               return window.atob(b64);
+               return globalThis.atob(b64);
             }
         }
     }
@@ -423,7 +423,7 @@ SnapExtensions.primitives.set(
     function (lst) {
         var byteArray = new Uint8Array(lst.contents.length);
         lst.contents.forEach((value, i) => {byteArray[i] = value & 0xff;});
-    return window.btoa(new Uint8Array(byteArray.buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+    return globalThis.btoa(new Uint8Array(byteArray.buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
     }
 );
 

@@ -529,4 +529,4 @@ Array.prototype.drawOn = function (context, x, y, totalWidth) {
     );
 };
 
-window.Fraction = Fraction;
+globalThis.Fraction = Fraction;

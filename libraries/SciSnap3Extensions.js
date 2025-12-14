@@ -87,12 +87,12 @@ SnapExtensions.primitives.set('SciS_addMenuItemForSciSnapManuals()',
       menu.addLine();
       menu.addItem('Reference manual', () => {
         var url = this.resourceURL('help', 'SnapManual.pdf');
-        window.open(url, 'SnapReferenceManual');
+        globalThis.open(url, 'SnapReferenceManual');
       });
-      menu.addItem('Snap! website', () => window.open('https://snap.berkeley.edu/', 'SnapWebsite'));
-      menu.addItem('SciSnap! manual', () => window.open('https://emu-online.de/ProgrammingWithSciSnap3.pdf', ''));
-      menu.addItem('SciSnap! Handbuch', () => window.open('https://emu-online.de/ProgrammierenMitSciSnap3.pdf', ''));
-      menu.addItem('Download source', () => window.open('https://github.com/jmoenig/Snap/releases/latest', 'SnapSource'));
+      menu.addItem('Snap! website', () => globalThis.open('https://snap.berkeley.edu/', 'SnapWebsite'));
+      menu.addItem('SciSnap! manual', () => globalThis.open('https://emu-online.de/ProgrammingWithSciSnap3.pdf', ''));
+      menu.addItem('SciSnap! Handbuch', () => globalThis.open('https://emu-online.de/ProgrammierenMitSciSnap3.pdf', ''));
+      menu.addItem('Download source', () => globalThis.open('https://github.com/jmoenig/Snap/releases/latest', 'SnapSource'));
       if (world.isDevMode) {
         menu.addLine();
         menu.addItem('Switch back to user mode', 'switchToUserMode', 'disable deep-Morphic\ncontext menus' + '\nand show user-friendly ones',
@@ -187,7 +187,7 @@ SnapExtensions.primitives.set('SciS_showAsDialog(theList)', function (theList) {
 SnapExtensions.primitives.set('SciS_setCursor(cur,proc)', function (cur, proc) { //Many thanks to helicoptur on the Snap! user forum!
   function setTo(val) {
     document.body.style.cursor = val;
-    top.window.document.body.style.cursor = val;
+    top.globalThis.document.body.style.cursor = val;
   }
   if (cur instanceof Costume || this.costumes.asArray().map(e => e.name).includes(cur) || cur === 'current') {
     alert("Sorry, costumes don't work very well for custom cursors at the moment.");
@@ -785,7 +785,7 @@ SnapExtensions.primitives.set('SciS_selectFileWithFilepicker(choice)',
     var inp = document.createElement('input'), ide = this.parent.parent, result = 0, done = false;
     function setCursor(val) {
       document.body.style.cursor = val;
-      top.window.document.body.style.cursor = val;
+      top.globalThis.document.body.style.cursor = val;
     }
     function userImport() {
       function readDir(fs) {
@@ -837,7 +837,7 @@ SnapExtensions.primitives.set('SciS_readFileAsBLOB(source)',
     var result = 0, done = false, isFITS = false, header, properties, min = 100000, max = -100000, typeOfData = 'undefined', filename = 'unknown', sum = 0, ide = this.parent.parent;
     function setCursor(val) {
       document.body.style.cursor = val;
-      top.window.document.body.style.cursor = val;
+      top.globalThis.document.body.style.cursor = val;
     }
     function getFITSdataFrom(anArrayBuffer) {
       function isDefined(key) {

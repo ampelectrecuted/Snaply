@@ -93,7 +93,7 @@ A page that embeds its own Snap! editor might be structured like this:
 		...
         <script>
             var world;
-            window.onload = function () {
+            globalThis.onload = function () {
                 var ide = new IDE_Morph({ /* configurations dictionary ...*/ }),
                     loop = () => {
                         requestAnimationFrame(loop);
@@ -180,7 +180,7 @@ The model case in mind is embedding Snap! in an iframe following a pattern such 
 
 In such a set up the ide can be accessed through the ```contentWindow``` property, e.g.
 
-    var ide = document.getElementsByTagName("iframe")[0].contentWindow.world.children[0];
+    var ide = document.getElementsByTagName("iframe")[0].contentglobalThis.world.children[0];
 
 ### Cross-domain iframes
 
@@ -188,14 +188,14 @@ If the iframe and the container do not share domains, you won't be able to reach
 and, thus, the API. For that particular case, you should use the `postMessage` mechanism,
 as follows:
 
-    document.querySelector('iframe').contentWindow.postMessage(
+    document.querySelector('iframe').contentglobalThis.postMessage(
         { selector: <API selector>, params: <param array> },
         '*'
     );
 
 For instance, to get the value of a variable named "foo", you would do:
 
-    document.querySelector('iframe').contentWindow.postMessage(
+    document.querySelector('iframe').contentglobalThis.postMessage(
         { selector: 'getVar', params: [ 'foo' ] },
         '*'
     );

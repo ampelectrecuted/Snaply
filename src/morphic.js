@@ -272,7 +272,7 @@
             <script type="text/javascript">
                 var world;
 
-                window.onload = function () {
+                globalThis.onload = function () {
                     world = new WorldMorph(document.getElementById('world'));
                     world.isDevMode = true;
                     loop();
@@ -318,7 +318,7 @@
             <script type="text/javascript">
                 var	world1, world2;
 
-                window.onload = function () {
+                globalThis.onload = function () {
                     world1 = new WorldMorph(
                         document.getElementById('world1'), false);
                     world2 = new WorldMorph(
@@ -363,7 +363,7 @@
             <script type="text/javascript">
                 var worldCanvas, sensor;
 
-                window.onload = function () {
+                globalThis.onload = function () {
                     var x, y, w, h;
 
                     worldCanvas = document.getElementById('world');
@@ -1612,8 +1612,8 @@ function getMinimumFontHeight() {
 function getDocumentPositionOf(aDOMelement) {
     // answer the relative coordinates of a DOM element in the viewport
     var rect = aDOMelement.getBoundingClientRect(),
-    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    scrollLeft = globalThis.pageXOffset || document.documentElement.scrollLeft,
+    scrollTop = globalThis.pageYOffset || document.documentElement.scrollTop;
     return {x: rect.left + scrollLeft, y:rect.top + scrollTop};
 }
 
@@ -1768,7 +1768,7 @@ function enableRetinaSupport() {
     // zoom level, so let's leave it like this right now, and stick to
     // whatever the ratio was in the beginning.
 
-        // originalDevicePixelRatio = window.devicePixelRatio,
+        // originalDevicePixelRatio = globalThis.devicePixelRatio,
 
     // [Jens]: As of summer 2016 non-integer devicePixelRatios lead to
     // artifacts when blitting images onto canvas elements in all browsers
@@ -1788,7 +1788,7 @@ function enableRetinaSupport() {
     // rendering something else onto it, which would slow things down
     // significantly. Hence I'm leaving the ratio-clipping to the ceiling in.
 
-        originalDevicePixelRatio = Math.ceil(window.devicePixelRatio),
+        originalDevicePixelRatio = Math.ceil(globalThis.devicePixelRatio),
 
         canvasProto = HTMLCanvasElement.prototype,
         contextProto = CanvasRenderingContext2D.prototype,
@@ -2025,7 +2025,7 @@ function isRetinaSupported () {
                 'shadowBlur'
             )
         };
-    return backingStorePixelRatio !== window.devicePixelRatio &&
+    return backingStorePixelRatio !== globalThis.devicePixelRatio &&
         !(Object.keys(uber).some(any => {
             var prop = uber[any];
             return prop.hasOwnProperty('configurable') && (!prop.configurable);
@@ -4608,7 +4608,7 @@ Morph.prototype.developersMenu = function () {
             var imgURL = this.fullImage().toDataURL(),
                 doc, body, tag, str;
             try {
-                doc = window.open('', '_blank', 'popup').document;
+                doc = globalThis.open('', '_blank', 'popup').document;
                 body = doc.getElementsByTagName('body')[0];
                 str = '' + this;
                 doc.title = str;
@@ -9117,7 +9117,7 @@ StringMorph.prototype.mouseClickLeft = function (pos) {
         }
         clickedText = this.text.substring(startMark, endMark + 1);
         if (isURL(clickedText)) {
-            window.open(clickedText, '_blank');
+            globalThis.open(clickedText, '_blank');
         } else {
             this.escalateEvent('mouseClickLeft', pos);
         }
@@ -12183,8 +12183,8 @@ WorldMorph.prototype.doOneCycle = function () {
 };
 
 WorldMorph.prototype.fillPage = function () {
-    var clientHeight = window.innerHeight,
-        clientWidth = window.innerWidth;
+    var clientHeight = globalThis.innerHeight,
+        clientWidth = globalThis.innerWidth;
 
     this.worldCanvas.style.position = "absolute";
     this.worldCanvas.style.left = "0px";
@@ -12469,12 +12469,12 @@ WorldMorph.prototype.initEventListeners = function () {
         false
     );
 
-    window.addEventListener(
+    globalThis.addEventListener(
         "dragover",
         event => event.preventDefault(),
         true
     );
-    window.addEventListener(
+    globalThis.addEventListener(
         "drop",
         event => {
             this.hand.processMouseMove(event);
@@ -12484,7 +12484,7 @@ WorldMorph.prototype.initEventListeners = function () {
         false
     );
 
-    window.addEventListener(
+    globalThis.addEventListener(
         "resize",
         () => {
             if (this.useFillPage) {
@@ -12495,13 +12495,13 @@ WorldMorph.prototype.initEventListeners = function () {
     );
 
     this.onbeforeunloadListener = (evt) => {
-        if (this.hasUnsavedEdits() && !window.noExitWarning) {
+        if (this.hasUnsavedEdits() && !globalThis.noExitWarning) {
             evt.preventDefault();
             // legacy browsers support
             evt.returnValue = true;
         }
     };
-    window.addEventListener("beforeunload", this.onbeforeunloadListener);
+    globalThis.addEventListener("beforeunload", this.onbeforeunloadListener);
 };
 
 WorldMorph.prototype.hasUnsavedEdits = function () {
@@ -12600,7 +12600,7 @@ WorldMorph.prototype.contextMenu = function () {
         );
         menu.addItem(
             "screenshot...",
-            () => window.open(this.fullImage().toDataURL()),
+            () => globalThis.open(this.fullImage().toDataURL()),
             'open a new window\nwith a picture of this morph'
         );
         menu.addLine();
@@ -12974,6 +12974,6 @@ WorldMorph.prototype.toggleHolesDisplay = function () {
 };
 
 WorldMorph.prototype.destroy = function () {
-    window.removeEventListener("onbeforeunload", this.onbeforeunloadListener);
+    globalThis.removeEventListener("onbeforeunload", this.onbeforeunloadListener);
     WorldMorph.uber.destroy.call(this);
 };

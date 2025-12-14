@@ -2848,7 +2848,7 @@ SyntaxElementMorph.prototype.exportPictureWithResult = function (aBubble) {
         ctx = pic.getContext('2d');
     ctx.drawImage(scr, 0, pic.height - scr.height);
     ctx.drawImage(bub, scr.width + 2, 0);
-    // request to open pic in new window.
+    // request to open pic in new globalThis.
 
     ide.saveFileAs(
         embedMetadataPNG(pic, this.toXMLString()),
@@ -16110,7 +16110,7 @@ RingReporterSlotMorph.prototype.drawEdgesDiamond = function (ctx) {
 // CommentMorph //////////////////////////////////////////////////////////
 
 /*
-    I am an editable, multi-line non-scrolling text window. I can be collapsed
+    I am an editable, multi-line non-scrolling text globalThis. I can be collapsed
     to a single abbreviated line or expanded to full. My width can be adjusted
     by the user, by height is determined by the size of my text body. I can be
     either placed in a scripting area or "stuck" to a block.

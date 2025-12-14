@@ -1,5 +1,5 @@
 // play note function
-var AudioContextFunc = window.AudioContext || window.webkitAudioContext;
+var AudioContextFunc = globalThis.AudioContext || globalThis.webkitAudioContext;
 var audioContext = new AudioContextFunc();
 
 // calculate midi pitches and frequencies
@@ -16,16 +16,16 @@ for (var i = 0; i <= 127; i++) {
     tempMidiFreqs[note] = 440 * Math.pow(2, (i - 69)/12)
 }
 
-window._currentNote = ""
-window._parsed = ""
-window._isParsed = false
-window.parent._ts_pausePlayback = false;
+globalThis._currentNote = ""
+globalThis._parsed = ""
+globalThis._isParsed = false
+globalThis.parent._ts_pausePlayback = false;
 
 const _ide = world.children[0];
 const original_stop = _ide.stopAllScripts.bind(_ide);
 _ide.stopAllScripts = function() {
   original_stop();
-  window.parent._ts_pausePlayback = true;
+  globalThis.parent._ts_pausePlayback = true;
 }
 
 const _convertToSharp = (note) => {
@@ -45,34 +45,34 @@ const _convertToSharp = (note) => {
     }
     return previousSharp + number;
 }
-window.parent.midiPitches = tempMidiPitches;
-window.parent.midiFreqs = tempMidiFreqs;
+globalThis.parent.midiPitches = tempMidiPitches;
+globalThis.parent.midiFreqs = tempMidiFreqs;
 
 
-window.playNote = (note, noteLength, instrumentName, volume) => {
-  window._currentNote = note
+globalThis.playNote = (note, noteLength, instrumentName, volume) => {
+  globalThis._currentNote = note
    if (note == "R" || note == "r") return;
 
    note = _convertToSharp(note);
    
 			var player=new WebAudioFontPlayer();
-   instrumentName = instrumentName || window.parent.currentInstrumentName;
+   instrumentName = instrumentName || globalThis.parent.currentInstrumentName;
    instrumentName = instrumentName.toLowerCase()
    // console.log(instrumentName);
-   let currentInstrumentData = window.parent.instrumentData[instrumentName]
+   let currentInstrumentData = globalThis.parent.instrumentData[instrumentName]
 			player.loader.decodeAfterLoading(audioContext, currentInstrumentData.name);
 			function play(){
-    const vol = volume || window.parent.instrumentVolumes[instrumentName] || window.parent.globalInstrumentVolume;
+    const vol = volume || globalThis.parent.instrumentVolumes[instrumentName] || globalThis.parent.globalInstrumentVolume;
     console.log(note, noteLength, instrumentName, vol)
 				player.queueWaveTable(audioContext, audioContext.destination
-					, window[currentInstrumentData.name], 0, window.parent.midiPitches[note], noteLength, vol
+					, window[currentInstrumentData.name], 0, globalThis.parent.midiPitches[note], noteLength, vol
     );
 				return false;
 			}
    play();
 }
 
-window.timeSignatureToBeatsPerMeasure = {
+globalThis.timeSignatureToBeatsPerMeasure = {
     "4/4": [4,1], // 4 beats per measure, Quarter note gets the beat
     "3/4": [3,1],
     "5/4": [5,1],
@@ -82,11 +82,11 @@ window.timeSignatureToBeatsPerMeasure = {
     "12/8": [12,0.5]
 }
 
-window.baseTempo = 60;
+globalThis.baseTempo = 60;
 
 // converts note lengths (quarter, half, whole)
 // to corresponding time value (1, 2, 4)
-window.noteLengthToTimeValue = {
+globalThis.noteLengthToTimeValue = {
     "dotted whole": 6,
     "whole": 4,
     "dotted half": 3,
@@ -108,7 +108,7 @@ window.noteLengthToTimeValue = {
 }
 
 // instrument data
-window.parent.instrumentData = {
+globalThis.parent.instrumentData = {
     "accordion": {
         path: "https://surikov.github.io/webaudiofontdata/sound/0230_Aspirin_sf2_file.js",
         name: "_tone_0230_Aspirin_sf2_file"
@@ -255,12 +255,12 @@ window.parent.instrumentData = {
 }
 
 // load all instruments
-let instrumentNames = Object.keys(window.parent.instrumentData);
-window.parent.currentInstrumentName = "piano";
+let instrumentNames = Object.keys(globalThis.parent.instrumentData);
+globalThis.parent.currentInstrumentName = "piano";
 
 // initialize volumes
-window.parent.instrumentVolumes = {}
-window.parent.globalInstrumentVolume = 0.5;
+globalThis.parent.instrumentVolumes = {}
+globalThis.parent.globalInstrumentVolume = 0.5;
 
 // tones
 class _Tone {
@@ -326,13 +326,13 @@ class _Tone {
   }
 
 }
-window._Tone = _Tone;
-window.tones = {};
+globalThis._Tone = _Tone;
+globalThis.tones = {};
 
 /* Auxillary Functions */
 // repeats an array n times
 // similar to [1,2,3] * 2 = [1,2,3,1,2,3] in Python
-window.multiplyArray = (arr, length) =>
+globalThis.multiplyArray = (arr, length) =>
   Array.from({ length }, () => arr).flat()
 
 
@@ -402,7 +402,7 @@ function Queue() {
   }
 
 }
-window.Queue = Queue;
+globalThis.Queue = Queue;
 
 /**
  * Converts all elements in a nested array (2D, 3D, etc) to lowercase
@@ -428,7 +428,7 @@ function toLowerCaseRecursive(array) {
     return array;
   }
 }
-window.toLowerCaseRecursive = toLowerCaseRecursive;
+globalThis.toLowerCaseRecursive = toLowerCaseRecursive;
 
 function convertListToArrayRecursive(list) {
     let temp = []
@@ -442,7 +442,7 @@ function convertListToArrayRecursive(list) {
         return list;
     }
 }
-window.convertListToArrayRecursive = convertListToArrayRecursive;
+globalThis.convertListToArrayRecursive = convertListToArrayRecursive;
 
 const convertArrayToListRecursive = (array) => {
     if (Array.isArray(array)) {
@@ -453,7 +453,7 @@ const convertArrayToListRecursive = (array) => {
     }
     return array;
 }
-window.convertArrayToListRecursive = convertArrayToListRecursive;
+globalThis.convertArrayToListRecursive = convertArrayToListRecursive;
 
 function _typeOf(value) {
     return Object.prototype.toString.call(value).slice(8, -1);
@@ -471,22 +471,22 @@ const _objToArray = (obj) => {
     ];
   });    
 }
-window._objToArray = _objToArray;
+globalThis._objToArray = _objToArray;
 
 function isNumber(myString) {
   return /^\d+\.\d+$/.test(myString);
 }
-window.isNumber = isNumber;
+globalThis.isNumber = isNumber;
 
 function hasNumber(myString) {
   return /\d/.test(myString);
 }
-window.hasNumber = hasNumber;
+globalThis.hasNumber = hasNumber;
 
 function deep_copy(array) {
   return JSON.parse(JSON.stringify(array));
 }
-window.deep_copy = deep_copy;
+globalThis.deep_copy = deep_copy;
 
 /**
  * Select file(s).
@@ -512,7 +512,7 @@ function _selectFile(contentType, multiple) {
         input.click();
     });
 }
-window._selectFile = _selectFile;
+globalThis._selectFile = _selectFile;
 
 // play dummy sound to initialize
 
@@ -521,7 +521,7 @@ setTimeout(() => {
   for (let i = 0; i < instrumentNames.length; i++) {
     let instrumentName = instrumentNames[i];
     if (instrumentName === "shakuhachi") return;
-    window.playNote("C4", 1, instrumentName, 0);
+    globalThis.playNote("C4", 1, instrumentName, 0);
   }
 }, 1000 * 3);
 
@@ -529,5 +529,5 @@ setTimeout(() => {
 
 setTimeout(() => {
   console.log("TuneScope Loaded")
-  window.parent.loadedTuneScope = true;
+  globalThis.parent.loadedTuneScope = true;
 }, 1000 * 4)

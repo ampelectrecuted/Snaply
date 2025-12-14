@@ -1571,7 +1571,7 @@ VectorPaintEditorMorph.prototype.getSVG = function () {
 
     svg.children = this.shapes.map(function (shape) { return shape.asSVG(); });
 
-    return window.btoa(svg);
+    return globalThis.btoa(svg);
 };
 
 VectorPaintEditorMorph.prototype.getBounds = function (shapeCollection) {

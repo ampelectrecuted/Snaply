@@ -872,7 +872,7 @@ SnapExtensions.primitives.set(
         utter.pitch = pitch;
         utter.rate = rate;
         utter.onend = () => isDone = true;
-        window.speechSynthesis.speak(utter);
+        globalThis.speechSynthesis.speak(utter);
         return () => isDone;
     }
 );
@@ -904,7 +904,7 @@ SnapExtensions.primitives.set(
             button.style.height = Math.max(10, area.y) + 'px';
 
             button.onclick = () => {
-                window.speechSynthesis.speak(new SpeechSynthesisUtterance());
+                globalThis.speechSynthesis.speak(new SpeechSynthesisUtterance());
                 document.body.removeChild(button);
                 acc.blocking = false;
             };
@@ -925,10 +925,10 @@ SnapExtensions.primitives.set(
         var sprec, done,
             acc = proc.context.accumulator;
         if (!acc) {
-            sprec = window.SpeechRecognition ||
-                window.webkitSpeechRecognition ||
-                window.mozSpeechRecognition ||
-                window.msSpeechRecognition;
+            sprec = globalThis.SpeechRecognition ||
+                globalThis.webkitSpeechRecognition ||
+                globalThis.mozSpeechRecognition ||
+                globalThis.msSpeechRecognition;
             if (!sprec) {
                 throw new Error('Speech Recognition is unavailable');
             }
@@ -1101,7 +1101,7 @@ SnapExtensions.primitives.set(
     'ori_tilt(xyz)',
     function (axis) {
         var ide = this.parentThatIsA(IDE_Morph),
-            isPortrait = window.matchMedia("(orientation: portrait)").matches,
+            isPortrait = globalThis.matchMedia("(orientation: portrait)").matches,
             myself = this,
             x, y, z;
 
@@ -1116,7 +1116,7 @@ SnapExtensions.primitives.set(
             DeviceOrientationEvent.requestPermission().then(response => {
                 if (response === 'granted') {
                     // Permission granted
-                    window.addEventListener(
+                    globalThis.addEventListener(
                         'deviceorientation',
                         updateTilt
                     );
@@ -1138,7 +1138,7 @@ SnapExtensions.primitives.set(
                 );
             } else {
                 // other devices
-                window.addEventListener('deviceorientation', updateTilt);
+                globalThis.addEventListener('deviceorientation', updateTilt);
             }
         }
 
@@ -1231,14 +1231,14 @@ SnapExtensions.primitives.set(
     function (key, value, proc) {
         proc.assertType(key, ['text', 'number']);
         proc.assertType(value, ['text', 'number']);
-        window.localStorage.setItem('-snap-project-' + key, '' + value);
+        globalThis.localStorage.setItem('-snap-project-' + key, '' + value);
     }
 );
 
 SnapExtensions.primitives.set(
     'db_getall',
     function () {
-        var str = window.localStorage,
+        var str = globalThis.localStorage,
             len = str.length,
             result = [],
             key,
@@ -1257,14 +1257,14 @@ SnapExtensions.primitives.set(
     'db_remove(key)',
     function (key, proc) {
         proc.assertType(key, ['text', 'number']);
-        window.localStorage.removeItem('-snap-project-' + key);
+        globalThis.localStorage.removeItem('-snap-project-' + key);
     }
 );
 
 SnapExtensions.primitives.set(
     'db_get(key)',
     function (key) {
-        var str = window.localStorage,
+        var str = globalThis.localStorage,
             result = str.getItem('-snap-project-'+key);
         if (!result) {
            return false;

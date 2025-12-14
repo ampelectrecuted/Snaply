@@ -12450,8 +12450,8 @@ StageMorph.prototype.stopAllActiveSounds = function () {
     if (this.microphone.modifier && this.microphone.isReady) {
         this.microphone.stop();
     }
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+    if (globalThis.speechSynthesis) {
+        globalThis.speechSynthesis.cancel();
     }
 };
 
@@ -14275,11 +14275,11 @@ Note.prototype.setupContext = function () {
     if (this.audioContext) { return; }
     var AudioContext = (function () {
         // cross browser some day?
-        var ctx = window.AudioContext ||
-            window.mozAudioContext ||
-            window.msAudioContext ||
-            window.oAudioContext ||
-            window.webkitAudioContext;
+        var ctx = globalThis.AudioContext ||
+            globalThis.mozAudioContext ||
+            globalThis.msAudioContext ||
+            globalThis.oAudioContext ||
+            globalThis.webkitAudioContext;
         if (!ctx.prototype.createGain) {
             ctx.prototype.createGain = ctx.prototype.createGainNode;
         }
@@ -14614,7 +14614,7 @@ Microphone.prototype.detectPitchAndVolume = function (buf, sampleRate) {
         val = buf[i];
         if (Math.abs(val) >= this.processor.clipLevel) {
             this.processor.clipping = true;
-            this.processor.lastClip = window.performance.now();
+            this.processor.lastClip = globalThis.performance.now();
         }
         rms += val * val;
 

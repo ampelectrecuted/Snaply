@@ -2,8 +2,8 @@
 <html>
   <head>
     <script>
-    if (window.location) {
-      window.location = 'snap.html' + window.location.hash;
+    if (globalThis.location) {
+      globalThis.location = 'snap.html' + globalThis.location.hash;
     }
     </script> 
     <meta HTTP-EQUIV="REFRESH" content="0.1; url=snap.html">

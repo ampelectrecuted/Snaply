@@ -72,7 +72,7 @@ SnapExtensions.primitives.set(
 );
 
 function makeGlobalObject () {
-    window.bigNumbers = {
+    globalThis.bigNumbers = {
         originalEvaluate: InputSlotMorph.prototype.evaluate,
         originalChangeVar: VariableFrame.prototype.changeVar,
         originalPrims: {
@@ -98,7 +98,7 @@ function makeGlobalObject () {
 
 function loadBlocks (useBigNums) {
     var fn = SchemeNumber.fn;
-    var originalPrims = window.bigNumbers.originalPrims;
+    var originalPrims = globalThis.bigNumbers.originalPrims;
     if (useBigNums) {
         InputSlotMorph.prototype.evaluate = function () {
             var contents = this.contents();
@@ -221,7 +221,7 @@ function loadBlocks (useBigNums) {
                 }
                 var size = Math.ceil(max.toString(10).length/14);
                 const array = new Uint32Array(size);
-                window.crypto.getRandomValues(array);
+                globalThis.crypto.getRandomValues(array);
                 var digits="";
                 for (i=0;i<size;i++) {
                     digits = digits + array[i].toString();
@@ -314,8 +314,8 @@ function loadBlocks (useBigNums) {
             }
         });
     } else {
-        InputSlotMorph.prototype.evaluate = window.bigNumbers.originalEvaluate;
-        VariableFrame.prototype.changeVar = window.bigNumbers.originalChangeVar;
+        InputSlotMorph.prototype.evaluate = globalThis.bigNumbers.originalEvaluate;
+        VariableFrame.prototype.changeVar = globalThis.bigNumbers.originalChangeVar;
         Object.assign(Process.prototype, originalPrims);
     }
     // +++ done = true;

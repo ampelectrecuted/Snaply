@@ -2286,7 +2286,7 @@ DialogBoxMorph.prototype.promptCredentials = function (
     function linkButton(label, url) {
         var btn = new PushButtonMorph(
             myself,
-            () => window.open(url),
+            () => globalThis.open(url),
             '  ' + localize(label) + '  '
         );
         btn.fontSize = 10;

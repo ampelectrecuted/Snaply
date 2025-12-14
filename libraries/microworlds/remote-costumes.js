@@ -10,7 +10,7 @@ SnapExtensions.primitives.set(
         ide.getURL(
             src,
             function(blob) {
-                var reader = new window.FileReader();
+                var reader = new globalThis.FileReader();
                 reader.readAsDataURL(blob);
                 var image = new Image();
 

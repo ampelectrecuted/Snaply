@@ -1,18 +1,18 @@
 
-window.birdbrain = {};
-window.birdbrain.sensorData = {};
-window.birdbrain.sensorData.A = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-window.birdbrain.sensorData.B = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-window.birdbrain.sensorData.C = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-window.birdbrain.microbitIsV2 = {};
-window.birdbrain.microbitIsV2.A = false;
-window.birdbrain.microbitIsV2.B = false;
-window.birdbrain.microbitIsV2.C = false;
-window.birdbrain.currentBeak = {};
-window.birdbrain.currentBeak.A = [0,0,0];
-window.birdbrain.currentBeak.B = [0,0,0];
-window.birdbrain.currentBeak.C = [0,0,0];
-window.birdbrain.robotType = {
+globalThis.birdbrain = {};
+globalThis.birdbrain.sensorData = {};
+globalThis.birdbrain.sensorData.A = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+globalThis.birdbrain.sensorData.B = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+globalThis.birdbrain.sensorData.C = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+globalThis.birdbrain.microbitIsV2 = {};
+globalThis.birdbrain.microbitIsV2.A = false;
+globalThis.birdbrain.microbitIsV2.B = false;
+globalThis.birdbrain.microbitIsV2.C = false;
+globalThis.birdbrain.currentBeak = {};
+globalThis.birdbrain.currentBeak.A = [0,0,0];
+globalThis.birdbrain.currentBeak.B = [0,0,0];
+globalThis.birdbrain.currentBeak.C = [0,0,0];
+globalThis.birdbrain.robotType = {
   FINCH: 1,
   HUMMINGBIRDBIT: 2,
   MICROBIT: 3,
@@ -24,29 +24,29 @@ window.birdbrain.robotType = {
 };
 
 //For the old style robots that connect over hid.
-window.bbtLegacy = {};
-window.bbtLegacy.sensorData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+globalThis.bbtLegacy = {};
+globalThis.bbtLegacy.sensorData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 console.log("setting up message channel")
-window.birdbrain.messageChannel = new MessageChannel();
-window.birdbrain.messageChannel.port1.onmessage = function (e) {
+globalThis.birdbrain.messageChannel = new MessageChannel();
+globalThis.birdbrain.messageChannel.port1.onmessage = function (e) {
     //console.log("Got a message: ");
     //console.log(e.data);
     if (e.data.sensorData != null && e.data.robot != null) {
       let robot = e.data.robot;
-      window.birdbrain.sensorData[robot] = e.data.sensorData;
-      window.birdbrain.robotType[robot] = e.data.robotType;
-      window.birdbrain.microbitIsV2[robot] = e.data.hasV2Microbit;
+      globalThis.birdbrain.sensorData[robot] = e.data.sensorData;
+      globalThis.birdbrain.robotType[robot] = e.data.robotType;
+      globalThis.birdbrain.microbitIsV2[robot] = e.data.hasV2Microbit;
     }
 
     if (e.data.hidSensorData != null ) {
-      window.bbtLegacy.sensorData = e.data.hidSensorData;
+      globalThis.bbtLegacy.sensorData = e.data.hidSensorData;
     }
 }
-window.parent.postMessage("hello from snap", "*", [window.birdbrain.messageChannel.port2]);
+globalThis.parent.postMessage("hello from snap", "*", [globalThis.birdbrain.messageChannel.port2]);
 
-window.birdbrain.sendCommand = function(command) {
-  window.parent.postMessage(command, "*");
+globalThis.birdbrain.sendCommand = function(command) {
+  globalThis.parent.postMessage(command, "*");
 }
 
 //  Converts byte range 0 - 255 to -127 - 127 represented as a 32 bit signe int
@@ -67,9 +67,9 @@ function byteToSignedInt16 (msb, lsb) {
   return value;
 }
 
-window.birdbrain.getMicrobitAcceleration = function(axis, robot) {
+globalThis.birdbrain.getMicrobitAcceleration = function(axis, robot) {
   const rawToMperS = 196/1280; //convert to meters per second squared
-  let sensorData = window.birdbrain.sensorData[robot];
+  let sensorData = globalThis.birdbrain.sensorData[robot];
   let accVal = 0;
   switch (axis) {
     case 'X':
@@ -85,9 +85,9 @@ window.birdbrain.getMicrobitAcceleration = function(axis, robot) {
   return (accVal * rawToMperS);
 }
 
-window.birdbrain.getMicrobitMagnetometer = function(axis, finch) {
+globalThis.birdbrain.getMicrobitMagnetometer = function(axis, finch) {
   const rawToUT = 1/10; //convert to uT
-  let sensorData = window.birdbrain.sensorData[finch];
+  let sensorData = globalThis.birdbrain.sensorData[finch];
   let msb = 0;
   let lsb = 0;
   switch (axis) {
@@ -108,8 +108,8 @@ window.birdbrain.getMicrobitMagnetometer = function(axis, finch) {
   return Math.round(magVal * rawToUT);
 }
 
-window.birdbrain.getFinchAcceleration = function(axis, finch) {
-  let sensorData = window.birdbrain.sensorData[finch];
+globalThis.birdbrain.getFinchAcceleration = function(axis, finch) {
+  let sensorData = globalThis.birdbrain.sensorData[finch];
   let accVal = 0;
   switch (axis) {
     case 'X':
@@ -133,8 +133,8 @@ window.birdbrain.getFinchAcceleration = function(axis, finch) {
     return (accVal * 196/1280);
 }
 
-window.birdbrain.getFinchMagnetometer = function(axis, finch) {
-  let sensorData = window.birdbrain.sensorData[finch];
+globalThis.birdbrain.getFinchMagnetometer = function(axis, finch) {
+  let sensorData = globalThis.birdbrain.sensorData[finch];
   switch (axis) {
     case 'X':
       return byteToSignedInt8(sensorData[17]);
@@ -175,7 +175,7 @@ SnapExtensions.primitives.set(
       value: position
     }
 
-    window.birdbrain.sendCommand(thisCommand);
+    globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -196,14 +196,14 @@ SnapExtensions.primitives.set(
       value: speed
     }
 
-    window.birdbrain.sendCommand(thisCommand);
+    globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
 SnapExtensions.primitives.set(
   'bbt_finchismoving(robot)',
   function (robot) {
-    return (window.birdbrain.sensorData[robot][4] > 127);
+    return (globalThis.birdbrain.sensorData[robot][4] > 127);
   }
 );
 
@@ -220,7 +220,7 @@ SnapExtensions.primitives.set(
       distance: distance,
       speed: speed
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
@@ -231,7 +231,7 @@ SnapExtensions.primitives.set(
       robot: robot,
       cmd: "stopFinch"
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
@@ -248,7 +248,7 @@ SnapExtensions.primitives.set(
       angle: angle,
       speed: speed
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
@@ -264,7 +264,7 @@ SnapExtensions.primitives.set(
       speedL: left,
       speedR: right
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
@@ -279,7 +279,7 @@ SnapExtensions.primitives.set(
       symbolString: symbolString
     }
 
-   window.birdbrain.sendCommand(thisCommand);
+   globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -293,7 +293,7 @@ SnapExtensions.primitives.set(
       intensity: Math.floor(Math.max(Math.min(intensity*2.55, 255), 0))
     }
 
-    window.birdbrain.sendCommand(thisCommand);
+    globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -306,7 +306,7 @@ SnapExtensions.primitives.set(
       printString: string
     }
 
-    window.birdbrain.sendCommand(thisCommand);
+    globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -322,10 +322,10 @@ SnapExtensions.primitives.set(
       blue: Math.floor(Math.max(Math.min(blue*2.55, 255), 0))
     }
     if (port == 1) {
-      window.birdbrain.currentBeak[robot] = [thisCommand.red, thisCommand.green, thisCommand.blue];
+      globalThis.birdbrain.currentBeak[robot] = [thisCommand.red, thisCommand.green, thisCommand.blue];
     }
 
-    window.birdbrain.sendCommand(thisCommand);
+    globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -338,7 +338,7 @@ SnapExtensions.primitives.set(
       robot: robot,
       cmd: "stopAll"
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
@@ -356,7 +356,7 @@ SnapExtensions.primitives.set(
       note: note,
       duration: duration
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
@@ -365,7 +365,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_accelerometer(robot, dimension)',
   function (robot, dim) {
-    let acc = window.birdbrain.getMicrobitAcceleration(dim, robot);
+    let acc = globalThis.birdbrain.getMicrobitAcceleration(dim, robot);
     return Math.round(acc * 10) / 10;
   }
 );
@@ -379,7 +379,7 @@ SnapExtensions.primitives.set(
     const soundScaling = 200/255;
     const voltageScaling = 3.3/255;
 
-    let value = window.birdbrain.sensorData[robot][port - 1];
+    let value = globalThis.birdbrain.sensorData[robot][port - 1];
 
     switch(sensor) {
       case "Distance (cm)":
@@ -403,9 +403,9 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_button(robot, button)',
   function (robot, button) {
-    const type = window.birdbrain.robotType[robot];
-    const index = (type == window.birdbrain.robotType.FINCH) ? 16 : 7;
-    var buttonState = window.birdbrain.sensorData[robot][index] & 0xF0; //Button Byte position = 7, clear LS Bits as it is for shake and calibrate
+    const type = globalThis.birdbrain.robotType[robot];
+    const index = (type == globalThis.birdbrain.robotType.FINCH) ? 16 : 7;
+    var buttonState = globalThis.birdbrain.sensorData[robot][index] & 0xF0; //Button Byte position = 7, clear LS Bits as it is for shake and calibrate
 
     switch (button) {
       case 'A':
@@ -413,8 +413,8 @@ SnapExtensions.primitives.set(
       case 'B':
         return (buttonState == 0x00 || buttonState == 0x10)
       case 'Logo (V2)':
-        if(window.birdbrain.microbitIsV2[robot]) {
-          return (((window.birdbrain.sensorData[robot][index] >> 1) & 0x1) == 0x0)
+        if(globalThis.birdbrain.microbitIsV2[robot]) {
+          return (((globalThis.birdbrain.sensorData[robot][index] >> 1) & 0x1) == 0x0)
         } else {
           return "micro:bit V2 required";
         }
@@ -428,12 +428,12 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_compass(robot)',
   function (robot) {
-    const ax = window.birdbrain.getMicrobitAcceleration('X', robot);
-    const ay = window.birdbrain.getMicrobitAcceleration('Y', robot);
-    const az = window.birdbrain.getMicrobitAcceleration('Z', robot);
-    const mx = window.birdbrain.getMicrobitMagnetometer('X', robot);
-    const my = window.birdbrain.getMicrobitMagnetometer('Y', robot);
-    const mz = window.birdbrain.getMicrobitMagnetometer('Z', robot);
+    const ax = globalThis.birdbrain.getMicrobitAcceleration('X', robot);
+    const ay = globalThis.birdbrain.getMicrobitAcceleration('Y', robot);
+    const az = globalThis.birdbrain.getMicrobitAcceleration('Z', robot);
+    const mx = globalThis.birdbrain.getMicrobitMagnetometer('X', robot);
+    const my = globalThis.birdbrain.getMicrobitMagnetometer('Y', robot);
+    const mz = globalThis.birdbrain.getMicrobitMagnetometer('Z', robot);
 
     const phi = Math.atan(-ay / az)
     const theta = Math.atan(ax / (ay * Math.sin(phi) + az * Math.cos(phi)))
@@ -454,7 +454,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_finchaccelerometer(robot, dimension)',
   function (robot, dim) {
-    let acc = window.birdbrain.getFinchAcceleration(dim, robot);
+    let acc = globalThis.birdbrain.getFinchAcceleration(dim, robot);
     return Math.round(acc * 10) / 10;
   }
 );
@@ -462,12 +462,12 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_finchcompass(robot)',
   function (robot) {
-    const ax = window.birdbrain.getFinchAcceleration('X', robot);
-    const ay = window.birdbrain.getFinchAcceleration('Y', robot);
-    const az = window.birdbrain.getFinchAcceleration('Z', robot);
-    const mx = window.birdbrain.getFinchMagnetometer('X', robot);
-    const my = window.birdbrain.getFinchMagnetometer('Y', robot);
-    const mz = window.birdbrain.getFinchMagnetometer('Z', robot);
+    const ax = globalThis.birdbrain.getFinchAcceleration('X', robot);
+    const ay = globalThis.birdbrain.getFinchAcceleration('Y', robot);
+    const az = globalThis.birdbrain.getFinchAcceleration('Z', robot);
+    const mx = globalThis.birdbrain.getFinchMagnetometer('X', robot);
+    const my = globalThis.birdbrain.getFinchMagnetometer('Y', robot);
+    const mz = globalThis.birdbrain.getFinchMagnetometer('Z', robot);
 
     const phi = Math.atan(-ay / az)
     const theta = Math.atan(ax / (ay * Math.sin(phi) + az * Math.cos(phi)))
@@ -488,12 +488,12 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_finchdistance(robot)',
   function (robot) {
-    if (window.birdbrain.microbitIsV2[robot]) {
-      return window.birdbrain.sensorData[robot][1];
+    if (globalThis.birdbrain.microbitIsV2[robot]) {
+      return globalThis.birdbrain.sensorData[robot][1];
     } else {
       const cmPerDistance = 0.0919;
-      const msb = window.birdbrain.sensorData[robot][0];
-      const lsb = window.birdbrain.sensorData[robot][1];
+      const msb = globalThis.birdbrain.sensorData[robot][0];
+      const lsb = globalThis.birdbrain.sensorData[robot][1];
 
       const distance = msb << 8 | lsb;
       return Math.round(distance * cmPerDistance);
@@ -510,14 +510,14 @@ SnapExtensions.primitives.set(
     var lsb = 0;
     switch (port) {
       case 'Right':
-        msb = window.birdbrain.sensorData[robot][10];
-        ssb = window.birdbrain.sensorData[robot][11];
-        lsb = window.birdbrain.sensorData[robot][12];
+        msb = globalThis.birdbrain.sensorData[robot][10];
+        ssb = globalThis.birdbrain.sensorData[robot][11];
+        lsb = globalThis.birdbrain.sensorData[robot][12];
         break;
       case 'Left':
-        msb = window.birdbrain.sensorData[robot][7];
-        ssb = window.birdbrain.sensorData[robot][8];
-        lsb = window.birdbrain.sensorData[robot][9];
+        msb = globalThis.birdbrain.sensorData[robot][7];
+        ssb = globalThis.birdbrain.sensorData[robot][8];
+        lsb = globalThis.birdbrain.sensorData[robot][9];
         break;
       default:
         console.log("unknown encoder port " + port);
@@ -537,14 +537,14 @@ SnapExtensions.primitives.set(
       robot: robot,
       cmd: "resetEncoders"
     }
-    window.birdbrain.sendCommand(thisCommand)
+    globalThis.birdbrain.sendCommand(thisCommand)
   }
 );
 
 SnapExtensions.primitives.set(
   'bbt_finchlight(robot, port)',
   function (robot, port) {
-    const beak = window.birdbrain.currentBeak[robot] || [0,0,0];
+    const beak = globalThis.birdbrain.currentBeak[robot] || [0,0,0];
     const R = beak[0]*100/255;
     const G = beak[1]*100/255;
     const B = beak[2]*100/255;
@@ -552,11 +552,11 @@ SnapExtensions.primitives.set(
     var correction = 0;
     switch (port) {
       case 'Right':
-        raw = window.birdbrain.sensorData[robot][3];
+        raw = globalThis.birdbrain.sensorData[robot][3];
         correction = 6.40473070e-03*R + 1.41015162e-02*G + 5.05547817e-02*B + 3.98301391e-04*R*G + 4.41091223e-04*R*B + 6.40756862e-04*G*B + -4.76971242e-06*R*G*B;
         break;
       case 'Left':
-        raw = window.birdbrain.sensorData[robot][2];
+        raw = globalThis.birdbrain.sensorData[robot][2];
         correction = 1.06871493e-02*R + 1.94526614e-02*G + 6.12409825e-02*B + 4.01343475e-04*R*G + 4.25761981e-04*R*B + 6.46091068e-04*G*B + -4.41056971e-06*R*G*B;
         break;
       default:
@@ -574,10 +574,10 @@ SnapExtensions.primitives.set(
     var rawVal = 0;
     switch (port) {
       case 'Right':
-        rawVal = window.birdbrain.sensorData[robot][5];
+        rawVal = globalThis.birdbrain.sensorData[robot][5];
         break;
       case 'Left':
-        rawVal = window.birdbrain.sensorData[robot][4];
+        rawVal = globalThis.birdbrain.sensorData[robot][4];
         //first bit is for position control
         rawVal = (0x7F & rawVal)
         break;
@@ -592,7 +592,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_finchmagnetometer(robot, dimension)',
   function (robot, dim) {
-    return window.birdbrain.getFinchMagnetometer(dim, robot);
+    return globalThis.birdbrain.getFinchMagnetometer(dim, robot);
   }
 );
 
@@ -600,7 +600,7 @@ SnapExtensions.primitives.set(
   'bbt_finchorientation(robot, dimension)',
   function (robot, dim) {
     if (dim == "Shake") {
-      let shake = window.birdbrain.sensorData[robot][16];
+      let shake = globalThis.birdbrain.sensorData[robot][16];
       return ((shake & 0x01) > 0);
     }
     const threshold = 7.848;
@@ -608,15 +608,15 @@ SnapExtensions.primitives.set(
     switch(dim) {
       case "Tilt Left":
       case "Tilt Right":
-        acceleration = window.birdbrain.getFinchAcceleration('X', robot);
+        acceleration = globalThis.birdbrain.getFinchAcceleration('X', robot);
         break;
       case "Beak Up":
       case "Beak Down":
-        acceleration = window.birdbrain.getFinchAcceleration('Y', robot);
+        acceleration = globalThis.birdbrain.getFinchAcceleration('Y', robot);
         break;
       case "Level":
       case "Upside Down":
-        acceleration = window.birdbrain.getFinchAcceleration('Z', robot);
+        acceleration = globalThis.birdbrain.getFinchAcceleration('Z', robot);
         break;
     }
     switch(dim) {
@@ -638,7 +638,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_magnetometer(robot, dimension)',
   function (robot, dim) {
-    return window.birdbrain.getMicrobitMagnetometer(dim, robot);
+    return globalThis.birdbrain.getMicrobitMagnetometer(dim, robot);
   }
 );
 
@@ -647,7 +647,7 @@ SnapExtensions.primitives.set(
   function (robot, dim) {
     if (dim == "Shake") {
       const index = 7;
-      let shake = window.birdbrain.sensorData[robot][index];
+      let shake = globalThis.birdbrain.sensorData[robot][index];
       return ((shake & 0x01) > 0);
     }
     const threshold = 7.848;
@@ -655,15 +655,15 @@ SnapExtensions.primitives.set(
     switch(dim) {
       case "Tilt Left":
       case "Tilt Right":
-        acceleration = window.birdbrain.getMicrobitAcceleration('X', robot);
+        acceleration = globalThis.birdbrain.getMicrobitAcceleration('X', robot);
         break;
       case "Logo Up":
       case "Logo Down":
-        acceleration = window.birdbrain.getMicrobitAcceleration('Y', robot);
+        acceleration = globalThis.birdbrain.getMicrobitAcceleration('Y', robot);
         break;
       case "Screen Up":
       case "Screen Down":
-        acceleration = window.birdbrain.getMicrobitAcceleration('Z', robot);
+        acceleration = globalThis.birdbrain.getMicrobitAcceleration('Z', robot);
         break;
     }
     switch(dim) {
@@ -685,12 +685,12 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_sound(robot)',
   function (robot) {
-    if (window.birdbrain.microbitIsV2[robot]) {
-      const type = window.birdbrain.robotType[robot];
-      if (type == window.birdbrain.robotType.FINCH) {
-        return window.birdbrain.sensorData[robot][0];
+    if (globalThis.birdbrain.microbitIsV2[robot]) {
+      const type = globalThis.birdbrain.robotType[robot];
+      if (type == globalThis.birdbrain.robotType.FINCH) {
+        return globalThis.birdbrain.sensorData[robot][0];
       } else {
-        return window.birdbrain.sensorData[robot][14];
+        return globalThis.birdbrain.sensorData[robot][14];
       }
     } else {
       return "micro:bit V2 required"
@@ -701,12 +701,12 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_temperature(robot)',
   function (robot) {
-    if (window.birdbrain.microbitIsV2[robot]) {
-      const type = window.birdbrain.robotType[robot];
-      if (type == window.birdbrain.robotType.FINCH) {
-        return (window.birdbrain.sensorData[robot][6] >> 2);
+    if (globalThis.birdbrain.microbitIsV2[robot]) {
+      const type = globalThis.birdbrain.robotType[robot];
+      if (type == globalThis.birdbrain.robotType.FINCH) {
+        return (globalThis.birdbrain.sensorData[robot][6] >> 2);
       } else {
-        return window.birdbrain.sensorData[robot][15];
+        return globalThis.birdbrain.sensorData[robot][15];
       }
     } else {
       return "micro:bit V2 required"
@@ -719,7 +719,7 @@ SnapExtensions.primitives.set(
 SnapExtensions.primitives.set(
   'bbt_gbbutton(robot, button)',
   function (robot, button) {
-    var buttonState = window.birdbrain.sensorData[robot][5] & 0xF0; //Button Byte position = 7, clear LS Bits as it is for shake and calibrate
+    var buttonState = globalThis.birdbrain.sensorData[robot][5] & 0xF0; //Button Byte position = 7, clear LS Bits as it is for shake and calibrate
 
     switch (button) {
       case 'right':
@@ -738,8 +738,8 @@ SnapExtensions.primitives.set(
   function (robot, sensor) {
     let index = 1
     if (sensor == "Right") { index = 3 }
-    const msb = window.birdbrain.sensorData[robot][index];
-    const lsb = window.birdbrain.sensorData[robot][index + 1];
+    const msb = globalThis.birdbrain.sensorData[robot][index];
+    const lsb = globalThis.birdbrain.sensorData[robot][index + 1];
     const value = msb << 8 | lsb;
     return value;
   }
@@ -756,7 +756,7 @@ SnapExtensions.primitives.set(
       symbolString: symbolString
     }
 
-   window.birdbrain.sendCommand(thisCommand);
+   globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -772,7 +772,7 @@ SnapExtensions.primitives.set(
       brightness: brightness
     }
 
-    window.birdbrain.sendCommand(thisCommand);
+    globalThis.birdbrain.sendCommand(thisCommand);
   }
 );
 
@@ -790,7 +790,7 @@ SnapExtensions.primitives.set(
       intensity: realIntensity
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -810,7 +810,7 @@ SnapExtensions.primitives.set(
       blue: realIntensities[2]
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -827,7 +827,7 @@ SnapExtensions.primitives.set(
       angle: realAngle
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -845,7 +845,7 @@ SnapExtensions.primitives.set(
         velocity: Math.abs(realVelocity)
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -862,7 +862,7 @@ SnapExtensions.primitives.set(
       intensity: realIntensity
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -870,7 +870,7 @@ SnapExtensions.primitives.set(
   'bbt_legacysaythis(phrase)',
   function (phrase) {
     var report = { message: "SPEAK", val: phrase};
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -878,7 +878,7 @@ SnapExtensions.primitives.set(
   'bbt_legacyhbsensor(sensor, port)',
   function (sensor, port) {
     var realport = port - 1;
-    var sensorvalue = window.bbtLegacy.sensorData[realport]
+    var sensorvalue = globalThis.bbtLegacy.sensorData[realport]
 
     switch(sensor) {
       case "Light":
@@ -939,7 +939,7 @@ SnapExtensions.primitives.set(
       rightSpeed: Math.abs(speeds[1]),
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -960,7 +960,7 @@ SnapExtensions.primitives.set(
       blue: values[2]
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -984,7 +984,7 @@ SnapExtensions.primitives.set(
       freqLow: value.freq & 0xFF
     };
 
-    window.birdbrain.sendCommand( report );
+    globalThis.birdbrain.sendCommand( report );
   }
 );
 
@@ -995,7 +995,7 @@ SnapExtensions.primitives.set(
     // Acceleration (X, Y, Z) = (2, 3, 4);
     // Left Obstacle = 5; Right Obstacle = 6;
     // Temperature C = 7;
-    return window.bbtLegacy.sensorData[port];
+    return globalThis.bbtLegacy.sensorData[port];
   }
 );
 
@@ -1003,9 +1003,9 @@ SnapExtensions.primitives.set(
   'bbt_legacyfinchorientation()',
   function () {
     var acceleration = Array(3);
-    acceleration[0] = window.bbtLegacy.sensorData[2]
-    acceleration[1] = window.bbtLegacy.sensorData[3]
-    acceleration[2] = window.bbtLegacy.sensorData[4]
+    acceleration[0] = globalThis.bbtLegacy.sensorData[2]
+    acceleration[1] = globalThis.bbtLegacy.sensorData[3]
+    acceleration[2] = globalThis.bbtLegacy.sensorData[4]
 
     var orientation;
 

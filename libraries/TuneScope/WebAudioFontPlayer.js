@@ -1206,7 +1206,7 @@ var WebAudioFontTicker = /** @class */ (function () {
                     }
                 }
                 var me = this;
-                window.requestAnimationFrame(function (time) {
+                globalThis.requestAnimationFrame(function (time) {
                     me.tick(audioContext, nextAudioTime, onTick, loopStart, loopPosition, loopEnd, onEnd);
                 });
             }

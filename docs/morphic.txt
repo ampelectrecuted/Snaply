@@ -272,7 +272,7 @@
             <script type="text/javascript">
                 var world;
 
-                window.onload = function () {
+                globalThis.onload = function () {
                     world = new WorldMorph(document.getElementById('world'));
                     world.isDevMode = true;
                     loop();
@@ -318,7 +318,7 @@
             <script type="text/javascript">
                 var	world1, world2;
 
-                window.onload = function () {
+                globalThis.onload = function () {
                     world1 = new WorldMorph(
                         document.getElementById('world1'), false);
                     world2 = new WorldMorph(
@@ -363,7 +363,7 @@
             <script type="text/javascript">
                 var worldCanvas, sensor;
 
-                window.onload = function () {
+                globalThis.onload = function () {
                     var x, y, w, h;
 
                     worldCanvas = document.getElementById('world');

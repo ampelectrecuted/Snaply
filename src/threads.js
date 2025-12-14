@@ -4279,7 +4279,7 @@ Process.prototype.decodeSound = function (sound, callback) {
     }
     if (!sound.isDecoding) {
         base64 = sound.audio.src.split(',')[1];
-        binaryString = window.atob(base64);
+        binaryString = globalThis.atob(base64);
         len = binaryString.length;
         bytes = new Uint8Array(len);
         for (i = 0; i < len; i += 1)        {
@@ -10747,7 +10747,7 @@ JSCompiler.prototype.functionHead = function () {
 };
 
 JSCompiler.prototype.compileFunction = function () {
-    return window.eval(this.compileFunctionBody.apply(this, arguments));
+    return globalThis.eval(this.compileFunctionBody.apply(this, arguments));
 };
 
 JSCompiler.prototype.findEmptySlot = function findEmptySlot(m) {
