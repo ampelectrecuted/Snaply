@@ -9388,13 +9388,8 @@ IDE_Morph.prototype.warnAboutDev = function () {
     }
     this.inform(
         "CAUTION! Development Version",
-        'This version of Snap! is being developed.\n' +
-            '*** It is NOT supported for end users. ***\n' +
-            'Saving a project in THIS version is likely to\n' +
-            'make it UNUSABLE or DEFECTIVE for current and\n' +
-            'even future official versions!\n\n' +
-            'visit https://snap.berkeley.edu/run\n' +
-            'for the official Snap! installation.'
+        'Snaply is in development. Report bugs on\n' +
+        'the forum topic.'
     ).nag = true;
 };
 
